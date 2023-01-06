@@ -1,0 +1,130 @@
+       /*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
+package com.mycompany.mybank;
+
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.util.ArrayList;
+import java.util.Scanner;
+import javax.swing.JOptionPane;
+
+/**
+ *
+ * @author swetu
+ */
+public class Mybank {
+ public static void main(String args[]){
+             int choice = 0;
+        Scanner sc = new Scanner(System.in);
+        
+        ArrayList<Employee> employeeList = new ArrayList<Employee>();
+        ArrayList<Customer> customerList = new ArrayList<Customer>();
+        
+             Bank bank = new Bank(1, "Our Bank", "800 300 9000", "www.ourbank.com.", customerList, employeeList);
+
+     do {
+            menu();
+            choice = sc.nextInt();
+            switch (choice) {
+                case 1:
+                    System.out.println("== Add employee==");
+                    System.out.println("Enter employee id");
+                    int eid = sc.nextInt();
+                    System.out.println("Enter First name");
+                    String first = sc.next();
+                    
+                    System.out.println("Enter Last name");
+                    String last = sc.next();
+
+                    System.out.println("Enter email");
+                    String email = sc.next();
+                    
+                    System.out.println("Enter phone number");
+                    String phone = sc.next();
+
+
+                    System.out.println("Employee type");
+                    String type = sc.next();
+                    Employee emp1 = null;
+                    if (type.equalsIgnoreCase("fulltime")) {
+                        //create employee instance with data
+                        System.out.println("Enter salary");
+                        float salary = sc.nextFloat();
+                        emp1 = new Fulltime(salary, eid, first, last, email, phone);
+                    } else {
+                        System.out.println("Enter hourly rate");
+                        float hourlyPay= sc.nextFloat();
+                        emp1 = new Parttime(hourlyPay, eid, first, last, email, phone);
+                    }
+
+                    //add employee in a bank
+                    bank.getEmployeeList().add(emp1);
+                    System.out.println(bank);
+                    break;
+                case 2:
+                    System.out.println("== Search employee == ");
+                    System.out.println("Enter employee id ");
+                    eid = sc.nextInt();
+                    boolean found = false;
+                    for (Employee e : bank.getEmployeeList()) {                       
+                        if (e.getEid() == eid) {
+                            System.out.println(e);
+                            found = true;
+                            break;
+                        }
+                    }
+                    if (found == false) {
+                        System.out.println("For this id - Employee does not exit");
+                    }
+                    break;
+                case 3:
+                    System.out.println("Save Employee");
+                    try {
+                        FileWriter fw = new FileWriter("c:\\data\\bank.txt");
+                        BufferedWriter bw = new BufferedWriter(fw);
+                        bw.write ("===========Bank ============\n");
+                        bw.write(bank.getBid() + "|" + bank.getName() + "|" + bank.getPhone() + bank.getWebUrl()+"\n");
+                       
+                        bw.write ("===========Employee[s] ============\n");
+
+                        for (Employee e : bank.getEmployeeList()) {
+
+                            bw.write(e.getEid() + "|" + e.getFirst() + e.getLast()+"|" + e.getEmail()+e.getPhone());
+                            if (e instanceof Fulltime) {
+                                bw.write(((Fulltime) e).getSalary() + "");
+                            } else {
+                                bw.write(((Parttime) e).getHourlyPay() + "");
+                            }
+                            bw.write("\n");
+                           
+                        } //for
+                       
+                        //TODO For Customer
+                       
+                        //Each Customer has account
+                       
+                      bw.close();
+                      fw.close();
+                    } catch (Exception e) {
+                        System.out.println(e.getMessage());
+                    }
+                    break;
+                case 4:
+                    break;
+            }
+
+        } while (choice != 4);
+
+    }
+         public static void menu() {
+        System.out.println("1 for Add Employee");
+        System.out.println("2 for Search Employee");
+        System.out.println("3 for Save Employee");
+
+        System.out.println("4 for Quit");
+        System.out.println("Enter your choice  ");
+    }
+     
+ }
